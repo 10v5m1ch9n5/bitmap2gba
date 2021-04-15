@@ -15,7 +15,7 @@ LDFLAGS := $(CFLAGS)
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 
 export CFILES := $(foreach dir, $(SOURCES), $(wildcard $(CURDIR)/$(dir)/*.c))
-export OFILES   := $(CFILES:.c=.o)
+export OFILES   := $(notdir $(CFILES:.c=.o))
 export OUTPUT := $(CURDIR)/$(TARGET)
 
 $(BUILD) :
@@ -27,7 +27,7 @@ else
 $(OUTPUT).elf : $(OFILES)
 	$(LD) $(LDFLAGS) $^ -o $@
 
-$(OFILES) : %.o : %.c
+$(OFILES) : $(CFILES)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 endif
