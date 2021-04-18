@@ -1,36 +1,37 @@
 # ==================== PROJECT OPTIONS ====================
 
-TARGET  := $(notdir $(CURDIR))
-SOURCES := src
+TARGET   := $(notdir $(CURDIR))
+SOURCES  := src
 INCLUDES := include
-BUILD   := build
+BUILD    := build
 
 CC := gcc
 CFLAGS := -Wall -std=c99
 LD := $(CC)
 LDFLAGS := $(CFLAGS)
 
-# ==================== BUILDING PROCESS ====================
+vpath %.c $(SOURCES)
+vpath %.h $(INCLUDES)
 
-ifneq ($(BUILD),$(notdir $(CURDIR)))
-
-export CFILES := $(foreach dir, $(SOURCES), $(wildcard $(CURDIR)/$(dir)/*.c))
-export OFILES   := $(notdir $(CFILES:.c=.o))
-export OUTPUT := $(CURDIR)/$(TARGET)
-
-$(BUILD) :
-	@[ -d $@ ] || mkdir -p $@
-	@$(MAKE) -C $(BUILD) -f $(CURDIR)/Makefile
-
-else
+CFILES := $(foreach dir, $(SOURCES), $(notdir $(wildcard $(dir)/*.c)))
+HFILES := $(foreach dir, $(INCLUDES), $(wildcard $(dir)/*.h))
+OFILES := $(CFILES:.c=.o)
+OUTPUT := $(CURDIR)/$(TARGET)
 
 $(OUTPUT).elf : $(OFILES)
-	$(LD) $(LDFLAGS) $^ -o $@
+	$(LD) $(LDFLAGS) $(BUILD)/* -o $@
 
-$(OFILES) : $(CFILES)
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OFILES) : %.o : %.c
+	$(CC) $(CFLAGS) -c $< -o $(BUILD)/$@
 
-endif
+$(CFILES) : $(HFILES)
+
+
+$(OFILES): | $(BUILD)
+
+
+$(BUILD):
+	@mkdir $@
 
 # ============== CLEAN ======================
 clean:
