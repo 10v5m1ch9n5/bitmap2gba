@@ -10,31 +10,29 @@ CFLAGS := -Wall -std=c99
 LD := $(CC)
 LDFLAGS := $(CFLAGS)
 
-vpath %.c $(SOURCES)
-vpath %.h $(INCLUDES)
 
-CFILES := $(foreach dir, $(SOURCES), $(notdir $(wildcard $(dir)/*.c)))
-HFILES := $(foreach dir, $(INCLUDES), $(wildcard $(dir)/*.h))
-OFILES := $(CFILES:.c=.o)
-OUTPUT := $(CURDIR)/$(TARGET)
+ifeq ($(notdir $(CURDIR)),$(BUILD))
 
 $(OUTPUT).elf : $(OFILES)
-	$(LD) $(LDFLAGS) $(BUILD)/* -o $@
+	$(LD) $(LDFLAGS) $^ -o $@
 
 $(OFILES) : %.o : %.c
-	$(CC) $(CFLAGS) -c $< -o $(BUILD)/$@
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(CFILES) : $(HFILES)
+else
 
-
-$(OFILES): | $(BUILD)
-
+export CFILES := $(foreach dir, $(SOURCES), $(notdir $(wildcard $(dir)/*.c)))
+export OFILES := $(CFILES:.c=.o)
+export VPATH  := $(foreach dir, $(SOURCES), $(CURDIR)/$(dir))
+export OUTPUT := $(CURDIR)/$(TARGET)
 
 $(BUILD):
-	@mkdir $@
+	@[ -d $@ ] || mkdir -p $@
+	@$(MAKE) -C $(BUILD) -f $(CURDIR)/Makefile
 
-# ============== CLEAN ======================
 clean:
 	@rm -rf $(BUILD) $(TARGET).elf
 
 .PHONY: $(BUILD) clean
+
+endif
