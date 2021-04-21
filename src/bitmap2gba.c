@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <sys/stat.h>
 
 #include "../include/bitmap.h"
 #include "../include/print_functions.h"
@@ -20,6 +21,7 @@ int main(int argc, char* argv[])
     parseBmp(img,infos->offset, w, h, bmp);
     GBA_DATA dat = convertToGBA(bmp, w, h);
 
+    mkdir("output",0777);
     FILE * output = fopen("output/title.c","w");
     printGBAData(output, dat,w*h);
     fclose(output);
