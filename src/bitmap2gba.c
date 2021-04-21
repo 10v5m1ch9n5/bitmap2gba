@@ -3,6 +3,7 @@
 #include <assert.h>
 
 #include "../include/bitmap.h"
+#include "../include/print_functions.h"
 
 int main(int argc, char* argv[])
 {
@@ -14,8 +15,14 @@ int main(int argc, char* argv[])
     printBmpInfos(*infos);
 
 
-    BITMAP32 bmp = initBmp(infos->width,infos->height);
-    parseBmp(img,infos->offset, infos->width, infos->height, bmp);
+    u32 w = infos->width, h = infos->height;
+    BITMAP32 bmp = initBmp(w,h);
+    parseBmp(img,infos->offset, w, h, bmp);
+    GBA_DATA dat = convertToGBA(bmp, w, h);
+
+    FILE * output = fopen("title.c","w");
+    printGBAData(output, dat,w*h);
+    fclose(output);
 
     // Freeing memory
     deleteBmp(bmp,infos->width,infos->height);

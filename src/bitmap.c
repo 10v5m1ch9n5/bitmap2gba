@@ -27,7 +27,7 @@ void getBmpInfos(BITMAP_METADATA* meta, FILE* bmp)
 void parseBmp(FILE* bmp, u32 offset, u32 width, u32 height, BITMAP32 img)
 {
     fseek(bmp,offset,SEEK_SET);
-    for (int l = 0; l < height; ++l)
+    for (int l = height-1; l >= 0; --l)
     {
         for (int c = 0; c < width; ++c)
         {
@@ -38,6 +38,19 @@ void parseBmp(FILE* bmp, u32 offset, u32 width, u32 height, BITMAP32 img)
         }
     }
     rewind(bmp);
+}
+
+GBA_DATA convertToGBA(BITMAP32 bmp, u32 width, u32 height)
+{
+    u32 * gba_data = malloc(sizeof(u32) * width * height);
+    for (int l = 0; l < height; ++l)
+    {
+        for (int c = 0; c < width ; ++c)
+        {
+            gba_data[c + width*l] = (bmp[l][c].r / 8) | ((bmp[l][c].g / 8)<<5) | ((bmp[l][c].b / 8)<<10);
+        }
+    }
+    return (GBA_DATA) gba_data;
 }
 
 BITMAP32 initBmp(u32 width, u32 height)
@@ -53,7 +66,7 @@ BITMAP32 initBmp(u32 width, u32 height)
 
 void deleteBmp(BITMAP32 bmp, u32 width, u32 height)
 {
-    for (int i = 0; i < width; ++i)
+    for (int i = 0; i < height; ++i)
     {
         free(bmp[i]);
     }

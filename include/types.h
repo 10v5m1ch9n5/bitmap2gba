@@ -9,7 +9,7 @@ typedef signed int s32;
 typedef signed short s16;
 typedef signed char s8;
 
-typedef struct _BITMAP_METADATA
+typedef struct BITMAP_METADATA
 {
     // File infos
     u32 fileSize;
@@ -27,7 +27,7 @@ typedef struct _BITMAP_METADATA
     u32 paletteSize;
 } BITMAP_METADATA;
 
-typedef struct _COLOR32
+typedef struct COLOR32
 {
     u8 r;
     u8 g;
@@ -36,5 +36,7 @@ typedef struct _COLOR32
 } COLOR32;
 
 typedef COLOR32** BITMAP32;
+
+typedef u32 * GBA_DATA;
 
 #endif
