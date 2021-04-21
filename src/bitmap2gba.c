@@ -12,6 +12,15 @@ int main(int argc, char* argv[])
 	BITMAP_METADATA* infos = malloc(sizeof(BITMAP_METADATA));
     getBmpInfos(infos,img);
     printBmpInfos(*infos);
+
+
+    COLOR32 ** bmp;
+    bmp = malloc(sizeof(COLOR32*) * infos->height);
+    for (int i = 0; i < infos->height; ++i)
+    {
+        bmp[i] = malloc(sizeof(COLOR32) * infos->width);
+    }
+    parseBmp(img,infos->offset, infos->width, infos->height, bmp);
     free(infos);
 	return 0;
 }

@@ -27,4 +27,14 @@ typedef struct _BITMAP_METADATA
     u32 paletteSize;
 } BITMAP_METADATA;
 
+typedef struct _COLOR32
+{
+    u8 r;
+    u8 g;
+    u8 b;
+    u8 a;
+} COLOR32;
+
+typedef COLOR32** BITMAP32;
+
 #endif

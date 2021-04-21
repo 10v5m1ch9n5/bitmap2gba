@@ -24,25 +24,19 @@ void getBmpInfos(BITMAP_METADATA* meta, FILE* bmp)
     rewind(bmp);
 }
 
-void printBmpInfos(BITMAP_METADATA meta)
+void parseBmp(FILE* bmp, u32 offset, u32 width, u32 height, COLOR32** img)
 {
-    printf("File size : %u bytes\n", meta.fileSize);
-    printf("Image dimensions : %ux%ux%u\n", meta.width, meta.height, meta.bitDepth);
-    printf("Compression method : %s\n", compressionMethod[meta.compressionMethod]);
-    printf("Raw image size (without file headers) : %u bytes\n", meta.imageSize);
-    // printf("Palette of %u colors\n", meta.bitDepth );
+    fseek(bmp,offset,SEEK_SET);
+    for (int l = 0; l < height; ++l)
+    {
+        for (int c = 0; c < width; ++c)
+        {
+            fread(&(img[l][c].b),1,1,bmp);
+            fread(&(img[l][c].g),1,1,bmp);
+            fread(&(img[l][c].r),1,1,bmp);
+            fread(&(img[l][c].a),1,1,bmp);
+        }
+    }
+    rewind(bmp);
 }
 
-char * compressionMethod[14] = {
-        "None",
-        "RLE 8-bit/pixel",
-        "RLE 4-bit/pixel",
-        "Huffman 1D",
-        "RLE-24",
-        "BI_PNG",
-        "RGBA bit field masks",
-        "","","","",
-        "None",
-        "RLE-8",
-        "RLE-4"
-};
