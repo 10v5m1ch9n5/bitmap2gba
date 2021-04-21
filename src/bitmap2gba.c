@@ -14,13 +14,12 @@ int main(int argc, char* argv[])
     printBmpInfos(*infos);
 
 
-    COLOR32 ** bmp;
-    bmp = malloc(sizeof(COLOR32*) * infos->height);
-    for (int i = 0; i < infos->height; ++i)
-    {
-        bmp[i] = malloc(sizeof(COLOR32) * infos->width);
-    }
+    BITMAP32 bmp = initBmp(infos->width,infos->height);
     parseBmp(img,infos->offset, infos->width, infos->height, bmp);
+
+    // Freeing memory
+    deleteBmp(bmp,infos->width,infos->height);
     free(infos);
+    fclose(img);
 	return 0;
 }
