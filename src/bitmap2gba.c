@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     parseBmp(img,infos->offset, w, h, bmp);
     GBA_DATA dat = convertToGBA(bmp, w, h);
 
-    FILE * output = fopen("title.c","w");
+    FILE * output = fopen("output/title.c","w");
     printGBAData(output, dat,w*h);
     fclose(output);
 
